@@ -1,0 +1,88 @@
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f4f6f9;
+}
+
+.navbar{
+  max-width:550px;
+}
+
+
+/* About + Skills layout */
+
+.title{
+  padding:60px;
+  text-align:center;
+}
+
+
+.title{
+  font-size:40px;
+  color:#3b6edc;
+  margin-bottom:40px;
+}
+
+
+.about-skills-container{
+  display:flex;
+  gap:80px;
+  justify-content:center;
+  padding:50px;
+}
+
+.about{
+  max-width:550px;
+}
+
+.skills{
+  max-width:550px;
+}
+
+.skills ul{
+  padding-left:20px;
+}
+
+.skills li{
+  margin-bottom:12px;
+}
+
+/* Projects */
+
+.projects{
+  padding:60px;
+  text-align:center;
+}
+
+.project-title{
+  font-size:40px;
+  color:#3b6edc;
+  margin-bottom:40px;
+}
+
+.project-grid{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+}
+
+.project-card{
+  width:320px;
+  padding:25px;
+  border-radius:10px;
+  text-align:left;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.project-card.blue{
+  background:#e8f0ff;
+}
+
+.project-card.green{
+  background:#e7f6ec;
+}
+
+.project-card.purple{
+  background:#efe7ff;
+}
