@@ -13,16 +13,25 @@ function About() {
       <h2>About Me</h2>
 
       <p>
-        Multi-talented Site Reliability Engineer with over 4 years of experience
-        in system engineering, software engineering, and AWS cloud.
-        I specialize in building and maintaining robust, scalable systems.
+        DevOps Lead with 10+ years of IT experience specializing in CI/CD automation, Azure DevOps Server, containerization, and 
+		cloud infrastructure.
+		I help organizations streamline build, release, and deployment pipelines by implementing scalable DevOps practices, Docker-based 
+		container strategies, and Kubernetes orchestration.
       </p>
 
       <p>
-        My expertise spans Infrastructure as Code (Terraform), Kubernetes,
-        Docker, Linux, and Computer Networks. I'm passionate about enhancing
-        monitoring and incident response, having achieved significant uptime
-        improvements and MTTR reductions in previous roles.
+        🔹 Expertise in Azure DevOps (On-Prem & Cloud)
+		🔹 CI/CD pipeline design (Classic & YAML)
+		🔹 Docker & Kubernetes deployment automation
+		🔹 .NET 6 / .NET 8 application build & release pipelines
+		🔹 NuGet package management & artifact automation
+		🔹 Infrastructure as Code & environment standardization
+		🔹 Git branching strategy (Dev / Feature / Release automation)
+
+		I have successfully built DevOps ecosystems from scratch in local Azure DevOps Server environments and implemented automation 
+		scripts to improve deployment efficiency and reduce manual errors.
+
+		Passionate about automation, reliability engineering, and continuous improvement.
       </p>
 
     </div>
