@@ -15,7 +15,7 @@ function Projects() {
         </div>
 
         <div className="project-card green">
-          <h3>Deploying a Web Project with Linux Server using Nginex</h3>
+          <h3>Deploying a Web Project with Linux Server using Nginx</h3>
           <p>
             Detailed steps for deploying a .Net core web application on Rocky linux .
           </p>
