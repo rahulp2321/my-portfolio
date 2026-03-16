@@ -3,7 +3,7 @@ function About() {
  <section className="hero">
 
 <div className="profile-circle">
-        DN
+        RP
       </div>
 	  
 <h2 className="title">DevOps & SRE Portfolio</h2>
