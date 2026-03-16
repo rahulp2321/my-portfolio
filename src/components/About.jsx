@@ -20,9 +20,11 @@ function About() {
       </p>
 
       <p>
-        🔹 Expertise in Azure DevOps (On-Prem & Cloud)
-		🔹 CI/CD pipeline design (Classic & YAML)
-		🔹 Docker & Kubernetes deployment automation
+        * Expertise in Azure DevOps (On-Prem & Cloud)
+		  
+		* CI/CD pipeline design (Classic & YAML)
+		  
+		* Docker & Kubernetes deployment automation
 		🔹 .NET 6 / .NET 8 application build & release pipelines
 		🔹 NuGet package management & artifact automation
 		🔹 Infrastructure as Code & environment standardization
