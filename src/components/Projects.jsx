@@ -29,6 +29,14 @@ function Projects() {
           </p>
         </div>
 
+        <div className="project-card purple">
+          <h3>Deploying a React Project host it on Vercel </h3>
+          <p>
+            Demonstration of CICD pipeline using Vercel for
+            automated builds and Deployment.
+          </p>
+        </div>
+
       </div>
 
     </section>
