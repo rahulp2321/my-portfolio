@@ -1,40 +1,41 @@
-# 🚀 Personal Portfolio — React
+# 🚀 DevOps Engineer Portfolio
 
-A professional, fully responsive portfolio website built with React. Designed for developers to showcase their skills, projects, experience, and contact info — perfect for interviews and job applications.
+A professional, fully responsive portfolio website built with **React** — designed for DevOps/Cloud engineers to showcase their skills, experience, certifications, and projects.
 
----
+![Preview](./preview.png)
 
 ## ✨ Features
 
-- **Hero** — Animated intro with name, role, CTA buttons, social links, and stats
-- **About** — Personal bio, quick info table, traits cards
-- **Skills** — Tabbed skill bars for Frontend / Backend / Database / Tools
-- **Projects** — Filterable project cards with GitHub & Live links
-- **Experience** — Vertical timeline for work history, education, and certifications
-- **Contact** — Contact form (plug in EmailJS / Formspree) + contact details
-- **Responsive** — Mobile-first, works on all screen sizes
-- **Dark theme** — Deep space aesthetic with accent glow effects
+- ⚡ Built with React 18
+- 🎨 Sleek dark theme with cyan/blue accents
+- 📱 Fully responsive (mobile, tablet, desktop)
+- 🖥️ Interactive terminal-style hero section
+- 📋 Sections: Hero, About, Skills, Experience, Projects, Certifications, Contact
+- 🔗 Contact form with mailto fallback
+- ✅ Easy to customize — all data in one file
 
 ---
 
-## 📁 Project Structure
+## 🏗️ Project Structure
 
 ```
-portfolio/
+devops-portfolio/
 ├── public/
 │   └── index.html
 ├── src/
 │   ├── components/
-│   │   ├── Navbar.js / Navbar.css
-│   │   ├── Hero.js / Hero.css
-│   │   ├── About.js / About.css
-│   │   ├── Skills.js / Skills.css
-│   │   ├── Projects.js / Projects.css
-│   │   ├── Experience.js / Experience.css
-│   │   ├── Contact.js / Contact.css
-│   │   └── Footer.js / Footer.css
+│   │   ├── Navbar.js
+│   │   ├── Hero.js
+│   │   ├── About.js
+│   │   ├── Skills.js
+│   │   ├── Experience.js
+│   │   ├── Projects.js
+│   │   ├── Certifications.js
+│   │   ├── Contact.js
+│   │   └── Footer.js
+│   ├── data/
+│   │   └── portfolioData.js   ← 📝 EDIT THIS FILE
 │   ├── App.js
-│   ├── App.css
 │   ├── index.js
 │   └── index.css
 └── package.json
@@ -42,23 +43,22 @@ portfolio/
 
 ---
 
-## 🛠️ Setup & Run Locally
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
+- Node.js 16+ and npm
 
-### Steps
+### Installation
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/portfolio.git
-cd portfolio
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/devops-portfolio.git
+cd devops-portfolio
 
-# 2. Install dependencies
+# Install dependencies
 npm install
 
-# 3. Start development server
+# Start dev server
 npm start
 ```
 
@@ -66,97 +66,22 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## ✏️ Customization — Update Your Details
+## ✏️ Customization
 
-Edit these files with your personal information:
+**All your personal info is in one place:**
 
-| File | What to update |
-|------|---------------|
-| `src/components/Hero.js` | Name, role, tagline, social links |
-| `src/components/About.js` | Bio, city, email, degree, traits |
-| `src/components/Skills.js` | Skill names and levels (0–100) |
-| `src/components/Projects.js` | Project title, desc, tags, GitHub/live URLs |
-| `src/components/Experience.js` | Jobs, education, certifications |
-| `src/components/Contact.js` | Email, LinkedIn, GitHub, location |
-| `src/components/Footer.js` | Social links |
-| `public/index.html` | Page title and meta description |
-| `public/resume.pdf` | Add your actual resume PDF |
-
----
-
-## 📧 Contact Form Setup
-
-The form is ready — just plug in a free email service:
-
-### Option A: Formspree (easiest)
-1. Sign up at [formspree.io](https://formspree.io)
-2. Create a new form → copy your Form ID
-3. In `Contact.js`, uncomment and update:
-```js
-const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(form),
-});
+```
+src/data/portfolioData.js
 ```
 
-### Option B: EmailJS
-1. Sign up at [emailjs.com](https://emailjs.com)
-2. Install: `npm install @emailjs/browser`
-3. Follow their React integration guide
-
----
-
-## 🌐 Deployment
-
-### Vercel (Recommended — Free)
-```bash
-npm install -g vercel
-vercel
-```
-
-### Netlify
-```bash
-npm run build
-# Drag & drop the `build/` folder to netlify.com/drop
-```
-
-### GitHub Pages
-```bash
-npm install --save-dev gh-pages
-```
-Add to `package.json`:
-```json
-"homepage": "https://yourusername.github.io/portfolio",
-"scripts": {
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d build"
-}
-```
-Then run:
-```bash
-npm run deploy
-```
-
----
-
-## 🔀 Push to GitHub
-
-```bash
-# Initialize git (if not already)
-git init
-
-# Add all files
-git add .
-
-# Commit
-git commit -m "Initial commit — portfolio website"
-
-# Create a new repo on github.com, then:
-git remote add origin https://github.com/yourusername/portfolio.git
-git branch -M main
-git push -u origin main
-```
+Edit the following exports:
+| Export | What to update |
+|--------|----------------|
+| `personal` | Name, title, email, phone, LinkedIn, GitHub, resume link |
+| `skills` | Technology categories and tags |
+| `experience` | Work history with company, role, period, description |
+| `projects` | Project cards with GitHub/demo links |
+| `certifications` | Cert name, issuer, date, credential ID |
 
 ---
 
@@ -165,14 +90,64 @@ git push -u origin main
 ```bash
 npm run build
 ```
-Generates an optimized production build in the `build/` folder.
+
+Output is in the `build/` folder — ready to deploy to:
+- **GitHub Pages** (see below)
+- **Netlify** (drag & drop the build folder)
+- **Vercel** (`vercel --prod`)
+- **AWS S3 + CloudFront**
+
+---
+
+## 🌐 Deploy to GitHub Pages
+
+1. Install the gh-pages package:
+```bash
+npm install --save-dev gh-pages
+```
+
+2. Add to `package.json`:
+```json
+"homepage": "https://YOUR_USERNAME.github.io/devops-portfolio",
+"scripts": {
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+}
+```
+
+3. Deploy:
+```bash
+npm run deploy
+```
+
+---
+
+## 📧 Contact Form Integration
+
+The contact form uses `mailto:` by default. For a real backend, replace the `handleSubmit` function in `Contact.js` with:
+
+- **[Formspree](https://formspree.io/)** — free, no backend needed
+- **[EmailJS](https://www.emailjs.com/)** — client-side email sending
+- **AWS SES + Lambda** — if you want the full DevOps stack 😄
+
+---
+
+## 🛠️ Tech Stack
+
+| Tool | Purpose |
+|------|---------|
+| React 18 | UI framework |
+| lucide-react | Icons |
+| Google Fonts | JetBrains Mono + Sora |
+| CSS Variables | Theming |
+| CSS Animations | Motion / transitions |
 
 ---
 
 ## 📄 License
 
-MIT — feel free to use and customize for your own portfolio.
+MIT — free to use and modify.
 
 ---
 
-> Built with React · Dark Theme · Fully Responsive
+> Built for DevOps engineers preparing for interviews. Good luck! 🎯

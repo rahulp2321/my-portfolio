@@ -1,85 +1,75 @@
 import React from 'react';
-import './About.css';
+import { personal } from '../data/portfolioData';
 
 export default function About() {
   return (
-    <div className="about container">
-      <div className="about-grid">
-        <div className="about-left">
-          <p className="section-label">About Me</p>
-          <h2 className="section-title">Crafting digital<br />experiences with care</h2>
-          <p className="about-para">
-            I'm a passionate Full Stack Developer based in <strong>Your City, India</strong>.
-            I specialize in building modern web applications using React, Node.js, and cloud technologies.
-          </p>
-          <p className="about-para">
-            When I'm not coding, I enjoy contributing to open source, writing technical blogs,
-            and exploring the intersection of design and engineering. I'm always eager to learn
-            new technologies and take on challenging projects.
-          </p>
+    <section id="about" className="section">
+      <div className="container">
+        <span className="section-subtitle">//</span>
+        <h2 className="section-title">About <span>Me</span></h2>
+        <div className="section-divider" />
 
-          <div className="about-info">
-            <div className="info-row">
-              <span className="info-label">Name</span>
-              <span className="info-val">Your Full Name</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Location</span>
-              <span className="info-val">Your City, Maharashtra, India</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Email</span>
-              <span className="info-val"><a href="mailto:your@email.com">your@email.com</a></span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Degree</span>
-              <span className="info-val">B.E. / B.Tech Computer Science</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Availability</span>
-              <span className="info-val available">
-                <span className="avail-dot" />
-                Open to Work
-              </span>
+        <div className="about-grid">
+          <div className="about-text">
+            <p>
+              I'm <strong style={{ color: 'var(--accent-blue)' }}>Rahul Patil</strong>, a DevOps Engineer based in Kolhapur with <strong style={{ color: 'var(--accent-blue)' }}>10+ years</strong> of hands-on experience designing and maintaining production infrastructure. I specialize in AWS, Kubernetes, and end-to-end CI/CD automation.
+            </p>
+            <p>
+              My approach: I help organizations streamline build, release, and deployment pipelines by implementing scalable DevOps practices, Docker-based container strategies, and Kubernetes orchestration.
+            </p>
+
+            <div className="about-highlights">
+              {[
+                'Expertise in Azure DevOps (On-Prem & Cloud)',
+                'CI/CD pipeline design (Classic & YAML)',
+                'Docker & Kubernetes deployment automation',
+                '.NET 6 / .NET 8 application build & release pipelines',
+                'NuGet package management & artifact automation',
+				'Infrastructure as Code & environment standardization',
+				'Git branching strategy (Dev / Feature / Release automation)'
+
+              ].map((item, i) => (
+                <div className="about-highlight-item" key={i}>
+                  <span className="icon-dot" />
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        <div className="about-right">
-          <div className="avatar-card">
-            <div className="avatar-ring">
-              <div className="avatar-inner">
-                <span className="avatar-initials">YN</span>
+          <div>
+            <div className="about-card">
+              <div className="about-info-grid">
+                <InfoItem label="Name" value={personal.name} />
+                <InfoItem label="Title" value={personal.title} />
+                <InfoItem label="Location" value={personal.location} />
+                <InfoItem label="Experience" value={`${personal.yearsExperience}+ Years`} />
+                <InfoItem label="Email" value={personal.email} isLink={`mailto:${personal.email}`} />
+                <InfoItem label="Phone" value={personal.phone} isLink={`tel:${personal.phone}`} />
+                <InfoItem label="LinkedIn" value="in/rahulpatil-devops" isLink={personal.linkedin} />
+                <InfoItem label="GitHub" value="rahulpatil-devops" isLink={personal.github} />
               </div>
-            </div>
-            <div className="avatar-glow" />
-          </div>
 
-          <div className="about-cards">
-            <div className="about-card">
-              <span className="card-icon">🚀</span>
-              <div>
-                <strong>Fast Learner</strong>
-                <p>Always keeping up with the latest technologies and best practices.</p>
-              </div>
-            </div>
-            <div className="about-card">
-              <span className="card-icon">🎯</span>
-              <div>
-                <strong>Problem Solver</strong>
-                <p>Love tackling complex challenges and finding elegant solutions.</p>
-              </div>
-            </div>
-            <div className="about-card">
-              <span className="card-icon">🤝</span>
-              <div>
-                <strong>Team Player</strong>
-                <p>Thrive in collaborative environments with agile methodologies.</p>
+              <div style={{ marginTop: 28, paddingTop: 24, borderTop: '1px solid var(--border)' }}>
+                <a href={personal.resume} download className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                  Download Resume
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+function InfoItem({ label, value, isLink }) {
+  return (
+    <div className="about-info-item">
+      <label>{label}</label>
+      <span>
+        {isLink ? <a href={isLink} target="_blank" rel="noreferrer">{value}</a> : value}
+      </span>
     </div>
   );
 }
