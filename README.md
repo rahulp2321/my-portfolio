@@ -1,153 +1,189 @@
-# 🚀 DevOps Engineer Portfolio
+# Next.js CI/CD Pipeline — GitHub Actions → S3 → EC2
 
-A professional, fully responsive portfolio website built with **React** — designed for DevOps/Cloud engineers to showcase their skills, experience, certifications, and projects.
-
-![Preview](./preview.png)
-
-## ✨ Features
-
-- ⚡ Built with React 18
-- 🎨 Sleek dark theme with cyan/blue accents
-- 📱 Fully responsive (mobile, tablet, desktop)
-- 🖥️ Interactive terminal-style hero section
-- 📋 Sections: Hero, About, Skills, Experience, Projects, Certifications, Contact
-- 🔗 Contact form with mailto fallback
-- ✅ Easy to customize — all data in one file
-
----
-
-## 🏗️ Project Structure
+## Architecture Overview
 
 ```
-devops-portfolio/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── Navbar.js
-│   │   ├── Hero.js
-│   │   ├── About.js
-│   │   ├── Skills.js
-│   │   ├── Experience.js
-│   │   ├── Projects.js
-│   │   ├── Certifications.js
-│   │   ├── Contact.js
-│   │   └── Footer.js
-│   ├── data/
-│   │   └── portfolioData.js   ← 📝 EDIT THIS FILE
-│   ├── App.js
-│   ├── index.js
-│   └── index.css
-└── package.json
+GitHub Push
+    │
+    ▼
+GitHub Actions
+    ├── Build Docker image
+    ├── Save as .tar.gz
+    ├── Upload to S3           (keeps last 3 tags, prunes older ones)
+    │
+    └── SSH into EC2
+            ├── Pull .tar.gz from S3
+            ├── docker load
+            ├── docker stop/rm old container
+            ├── docker run (port 80 → 3000)
+            └── Health check via HTTP
 ```
 
 ---
 
-## 🚀 Getting Started
+## Files in This Package
 
-### Prerequisites
-- Node.js 16+ and npm
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Multi-stage build for Next.js (deps → builder → runner) |
+| `.dockerignore` | Exclude unnecessary files from the Docker build context |
+| `.github/workflows/cicd.yml` | Full GitHub Actions pipeline |
+| `scripts/prune_s3_images.sh` | Keep only the last 3 image tars in S3 |
+| `scripts/deploy_on_server.sh` | Runs on EC2: pull from S3, load, restart container |
+| `scripts/ec2_setup.sh` | One-time EC2 server setup (Docker + AWS CLI) |
 
-### Installation
+---
+
+## Step-by-Step Setup
+
+### Step 1 — Prepare your Next.js app for standalone output
+
+In `next.config.js`, add:
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone',  // ← required for the Dockerfile
+};
+
+module.exports = nextConfig;
+```
+
+### Step 2 — Copy these files into your repo
+
+```
+your-repo/
+├── Dockerfile
+├── .dockerignore
+├── .github/
+│   └── workflows/
+│       └── cicd.yml
+└── scripts/
+    ├── prune_s3_images.sh
+    ├── deploy_on_server.sh
+    └── ec2_setup.sh
+```
+
+### Step 3 — Create an S3 bucket
 
 ```bash
-# Clone the repo
-git clone https://github.com/YOUR_USERNAME/devops-portfolio.git
-cd devops-portfolio
-
-# Install dependencies
-npm install
-
-# Start dev server
-npm start
+aws s3api create-bucket \
+  --bucket YOUR_BUCKET_NAME \
+  --region ap-south-1 \
+  --create-bucket-configuration LocationConstraint=ap-south-1
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Step 4 — Create an IAM user for GitHub Actions
 
----
+Attach this inline policy (replace `YOUR_BUCKET_NAME`):
 
-## ✏️ Customization
-
-**All your personal info is in one place:**
-
-```
-src/data/portfolioData.js
-```
-
-Edit the following exports:
-| Export | What to update |
-|--------|----------------|
-| `personal` | Name, title, email, phone, LinkedIn, GitHub, resume link |
-| `skills` | Technology categories and tags |
-| `experience` | Work history with company, role, period, description |
-| `projects` | Project cards with GitHub/demo links |
-| `certifications` | Cert name, issuer, date, credential ID |
-
----
-
-## 📦 Build for Production
-
-```bash
-npm run build
-```
-
-Output is in the `build/` folder — ready to deploy to:
-- **GitHub Pages** (see below)
-- **Netlify** (drag & drop the build folder)
-- **Vercel** (`vercel --prod`)
-- **AWS S3 + CloudFront**
-
----
-
-## 🌐 Deploy to GitHub Pages
-
-1. Install the gh-pages package:
-```bash
-npm install --save-dev gh-pages
-```
-
-2. Add to `package.json`:
 ```json
-"homepage": "https://YOUR_USERNAME.github.io/devops-portfolio",
-"scripts": {
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d build"
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::YOUR_BUCKET_NAME",
+        "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+      ]
+    }
+  ]
 }
 ```
 
-3. Deploy:
+Generate an **Access Key ID** and **Secret Access Key** for this user.
+
+### Step 5 — Add GitHub Actions Secrets
+
+Go to **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret Name | Value |
+|-------------|-------|
+| `AWS_ACCESS_KEY_ID` | From IAM user above |
+| `AWS_SECRET_ACCESS_KEY` | From IAM user above |
+| `AWS_REGION` | e.g. `ap-south-1` |
+| `S3_BUCKET` | Your S3 bucket name |
+| `EC2_HOST` | Your EC2 public IP (e.g. `13.x.x.x`) |
+| `EC2_USER` | `ec2-user` (Amazon Linux) or `ubuntu` (Ubuntu) |
+| `EC2_SSH_PRIVATE_KEY` | Contents of your `.pem` file (the full key) |
+
+### Step 6 — Prepare your EC2 instance
+
+1. Launch an **Amazon Linux 2** or **Amazon Linux 2023** EC2 instance.
+2. In **Security Group**, open inbound:
+   - Port **22** (SSH) — your IP or GitHub Actions range
+   - Port **80** (HTTP) — `0.0.0.0/0`
+3. SSH in and run the one-time setup:
+
 ```bash
-npm run deploy
+scp -i your-key.pem scripts/ec2_setup.sh ec2-user@YOUR_EC2_IP:/tmp/
+ssh -i your-key.pem ec2-user@YOUR_EC2_IP
+bash /tmp/ec2_setup.sh
+```
+
+### Step 7 — Push and trigger the pipeline
+
+```bash
+git add .
+git commit -m "Add CI/CD pipeline"
+git push origin main
+```
+
+Watch the pipeline run at **GitHub → Actions tab**.
+
+---
+
+## Accessing Your App
+
+After a successful deploy, open your browser:
+
+```
+http://YOUR_EC2_PUBLIC_IP
 ```
 
 ---
 
-## 📧 Contact Form Integration
+## How the S3 Tag Rotation Works
 
-The contact form uses `mailto:` by default. For a real backend, replace the `handleSubmit` function in `Contact.js` with:
+Every successful build uploads a new `.tar.gz`:
+```
+s3://your-bucket/docker-images/nextjs-app-a1b2c3d.tar.gz
+```
 
-- **[Formspree](https://formspree.io/)** — free, no backend needed
-- **[EmailJS](https://www.emailjs.com/)** — client-side email sending
-- **AWS SES + Lambda** — if you want the full DevOps stack 😄
-
----
-
-## 🛠️ Tech Stack
-
-| Tool | Purpose |
-|------|---------|
-| React 18 | UI framework |
-| lucide-react | Icons |
-| Google Fonts | JetBrains Mono + Sora |
-| CSS Variables | Theming |
-| CSS Animations | Motion / transitions |
+The `prune_s3_images.sh` script then lists all objects in that prefix, sorts by `LastModified` (oldest first), and deletes everything beyond the last **3**. This keeps storage costs low while allowing rollback to any of the 3 most recent builds.
 
 ---
 
-## 📄 License
+## Manual Rollback
 
-MIT — free to use and modify.
+To redeploy a previous tag:
+
+```bash
+# On your EC2 server
+export APP_NAME=nextjs-app
+export IMAGE_TAG=nextjs-app-<OLD_SHA>   # from S3 list
+export S3_BUCKET=your-bucket
+export AWS_REGION=ap-south-1
+export HOST_PORT=80
+export CONTAINER_PORT=3000
+
+aws s3 cp s3://${S3_BUCKET}/docker-images/${IMAGE_TAG}.tar.gz /tmp/
+docker load < /tmp/${IMAGE_TAG}.tar.gz
+docker stop ${APP_NAME} && docker rm ${APP_NAME}
+docker run -d --name ${APP_NAME} --restart unless-stopped \
+  -p ${HOST_PORT}:${CONTAINER_PORT} ${APP_NAME}:${IMAGE_TAG}
+```
 
 ---
 
-> Built for DevOps engineers preparing for interviews. Good luck! 🎯
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| Build fails on `npm run build` | Check that `next.config.js` has `output: 'standalone'` |
+| S3 upload fails | Verify `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` secrets |
+| SSH connection refused | Ensure port 22 is open in the EC2 security group |
+| Container not starting | SSH into EC2 and run `docker logs nextjs-app` |
+| Health check fails | Check that port 80 is open in the security group |

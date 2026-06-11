@@ -9,7 +9,7 @@ export const personal = {
   description:
     "I help organizations streamline build, release, and deployment pipelines by implementing scalable DevOps practices, Docker-based container strategies, and Kubernetes orchestration..",
   location: "Kolhapur, Maharashtra, India",
-  email: "rahul.patil@gmail.com",
+  email: "rahulp2321@gmail.com",
   phone: "+91 8796685268",
   linkedin: "https://www.linkedin.com/in/rahul-patil-b782332a8",
   github: "https://github.com/rahulp2321",
