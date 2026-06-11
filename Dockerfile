@@ -1,46 +1,31 @@
-# ─── Stage 1: Dependencies ───────────────────────────────────────────────────
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+# ─── Stage 1: Build ───────────────────────────────────────────────────────────
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
+# Install dependencies
+COPY package.json package-lock.json* yarn.lock* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-  else echo "No lockfile found." && exit 1; \
+  else npm install; \
   fi
 
-# ─── Stage 2: Builder ────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy source and build
 COPY . .
-
-ENV NEXT_TELEMETRY_DISABLED=1
-
 RUN npm run build
 
-# ─── Stage 3: Runner ─────────────────────────────────────────────────────────
-FROM node:20-alpine AS runner
-WORKDIR /app
+# ─── Stage 2: Serve with Nginx ────────────────────────────────────────────────
+FROM nginx:alpine AS runner
 
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+# Remove default nginx static files
+RUN rm -rf /usr/share/nginx/html/*
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser  --system --uid 1001 nextjs
+# Copy built React app from builder stage
+COPY --from=builder /app/build /usr/share/nginx/html
 
-COPY --from=builder /app/public ./public
+# Copy custom nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Leverage Next.js output tracing for smallest image
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+EXPOSE 80
 
-USER nextjs
-
-EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-CMD ["node", "server.js"]
+CMD ["nginx", "-g", "daemon off;"]
