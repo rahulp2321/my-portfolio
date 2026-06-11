@@ -187,3 +187,6 @@ docker run -d --name ${APP_NAME} --restart unless-stopped \
 | SSH connection refused | Ensure port 22 is open in the EC2 security group |
 | Container not starting | SSH into EC2 and run `docker logs nextjs-app` |
 | Health check fails | Check that port 80 is open in the security group |
+
+
+Hi
